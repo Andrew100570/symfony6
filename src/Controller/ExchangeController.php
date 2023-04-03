@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use DateTimeImmutable;
+use App\Repository\HistoryRepository;
 
 class ExchangeController extends AbstractController
 {
@@ -45,5 +46,16 @@ class ExchangeController extends AbstractController
         }
 
         return JsonResponse::fromJsonString('Wartości secondIn i firstIn są zamieniane');
+    }
+
+    #[Route('/values', name: 'app_exchange_all', methods: ['GET'])]
+    public function getAllHistory(HistoryRepository $historyRepository): Response
+    {
+        $histories = $historyRepository->findAll();
+
+
+        return $this->render('history/all.html.twig', [
+            'histories' => $histories
+        ]);
     }
 }
