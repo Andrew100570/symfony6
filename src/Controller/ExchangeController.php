@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use DateTimeImmutable;
 use App\Repository\HistoryRepository;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ExchangeController extends AbstractController
 {
@@ -56,6 +57,19 @@ class ExchangeController extends AbstractController
 
         return $this->render('history/all.html.twig', [
             'histories' => $histories
+        ]);
+    }
+
+    #[Route('exchange/values', name: 'app_exchange_get', methods: ['GET'])]
+    public function gePaginationtHistory(HistoryRepository $historyRepository, Request $request,PaginatorInterface $paginator): Response
+    {
+        $pagination = $paginator->paginate(
+            $historyRepository->paginationQuery(),
+            $request->query->get('page', 1),
+            3);
+
+        return $this->render('exchange/index.html.twig', [
+            'pagination' => $pagination
         ]);
     }
 }
